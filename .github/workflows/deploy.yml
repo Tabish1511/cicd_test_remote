@@ -1,0 +1,196 @@
+name: Build and Deploy Docker-Compose Services
+
+on:
+  push:
+    branches:
+      - master
+      - main
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Check Out Repo
+      uses: actions/checkout@v2
+
+    - name: Log in to Docker Hub
+      uses: docker/login-action@v1
+      with:
+        username: ${{ secrets.DOCKER_USERNAME }}
+        password: ${{ secrets.DOCKER_PASSWORD }}
+
+    - name: Build and Push API Image
+      uses: docker/build-push-action@v2
+      with:
+        context: ./apps/api  # Corrected context for API service
+        file: ./apps/api/Dockerfile  # Corrected path to API Dockerfile
+        push: true
+        tags: tabish1511/cicd-test:api  # Push API image to the 'cicd-test' repository with 'api' tag
+
+    - name: Build and Push Worker Image
+      uses: docker/build-push-action@v2
+      with:
+        context: ./apps/worker  # Corrected context for Worker service
+        file: ./apps/worker/Dockerfile  # Corrected path to Worker Dockerfile
+        push: true
+        tags: tabish1511/cicd-test:worker  # Push Worker image to the 'cicd-test' repository with 'worker' tag
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+# name: Build and Deploy Docker-Compose Services
+
+# on:
+#   push:
+#     branches:
+#       - master
+      # - main
+
+# jobs:
+#   build-and-deploy:
+#     runs-on: ubuntu-latest
+#     steps:
+#     - name: Check Out Repo
+#       uses: actions/checkout@v2
+
+#     - name: Log in to Docker Hub
+#       uses: docker/login-action@v1
+#       with:
+#         username: ${{ secrets.DOCKER_USERNAME }}
+#         password: ${{ secrets.DOCKER_PASSWORD }}
+
+#     - name: Build and Push API Image
+#       uses: docker/build-push-action@v2
+#       with:
+#         context: .
+#         file: ./apps/api/Dockerfile  # Path to your API Dockerfile
+#         push: true
+#         tags: tabish1511/api:latest  # Replace with your Docker Hub username and repository
+
+#     - name: Build and Push Worker Image
+#       uses: docker/build-push-action@v2
+#       with:
+#         context: .
+#         file: ./apps/worker/Dockerfile  # Path to your Worker Dockerfile
+#         push: true
+#         tags: tabish1511/worker:latest  # Replace with your Docker Hub username and repository
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    # - name: Create Docker Compose File for Deployment
+    #   run: |
+    #     cat > docker-compose.deploy.yml <<EOF
+    #     version: "3.9"
+    #     services:
+    #       api:
+    #         image: tabish1511/api:latest
+    #         container_name: api
+    #         ports:
+    #           - "8080:8080"
+    #         depends_on:
+    #           - redis
+
+    #       worker:
+    #         image: tabish1511/worker:latest
+    #         container_name: worker
+    #         depends_on:
+    #           - redis
+
+    #       redis:
+    #         image: redis:latest
+    #         container_name: cicd-test-redis
+    #         ports:
+    #           - "6379:6379"
+    #     EOF
+
+    # - name: Deploy Services with Docker Compose
+    #   run: docker-compose -f docker-compose.deploy.yml up -d
