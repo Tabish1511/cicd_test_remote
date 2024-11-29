@@ -1,21 +1,61 @@
 version: "3.9"
 services:
   api:
-    image: tabish1511/cicd-test:api  # Full image name
+    image: tabish1511/cicd-test:api
     container_name: api
     ports:
       - "8080:8080"
     depends_on:
       - redis
+    restart: unless-stopped
 
   worker:
-    image: tabish1511/cicd-test:worker  # Full image name
+    image: tabish1511/cicd-test:worker
     container_name: worker
     depends_on:
       - redis
+    restart: unless-stopped
 
   redis:
     image: redis
     container_name: cicd-test-redis
     ports:
       - "6379:6379"
+    restart: unless-stopped
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+# version: "3.9"
+# services:
+#   api:
+#     image: tabish1511/cicd-test:api  # Full image name
+#     container_name: api
+#     ports:
+#       - "8080:8080"
+#     depends_on:
+#       - redis
+
+#   worker:
+#     image: tabish1511/cicd-test:worker  # Full image name
+#     container_name: worker
+#     depends_on:
+#       - redis
+
+#   redis:
+#     image: redis
+#     container_name: cicd-test-redis
+#     ports:
+#       - "6379:6379"
+
