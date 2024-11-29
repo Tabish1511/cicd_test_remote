@@ -41,7 +41,7 @@ jobs:
         host: ${{ secrets.SSH_HOST }}
         username: ${{ secrets.SSH_USERNAME }}
         key: ${{ secrets.SSH_KEY }}
-        source: ./docker-compose.yaml
+        source: ./docker-compose-server.yaml
         target: /home/ubuntu/cicd-test/
 
     - name: Deploy to EC2
@@ -57,10 +57,10 @@ jobs:
           sudo docker pull redis:latest
           
           # Stop and remove existing containers if they exist
-          sudo docker-compose -f /home/ubuntu/cicd-test/docker-compose.yaml down
+          sudo docker-compose -f /home/ubuntu/cicd-test/docker-compose-server.yaml down
           
           # Run docker-compose with updated images
-          sudo docker-compose -f /home/ubuntu/cicd-test/docker-compose.yaml up -d
+          sudo docker-compose -f /home/ubuntu/cicd-test/docker-compose-server.yaml up -d
 
 
 
