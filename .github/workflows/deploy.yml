@@ -22,18 +22,213 @@ jobs:
     - name: Build and Push API Image
       uses: docker/build-push-action@v2
       with:
-        context: ./apps/api  # Corrected context for API service
-        file: ./apps/api/Dockerfile  # Corrected path to API Dockerfile
+        context: ./apps/api
+        file: ./apps/api/Dockerfile
         push: true
-        tags: tabish1511/cicd-test:api  # Push API image to the 'cicd-test' repository with 'api' tag
+        tags: tabish1511/cicd-test:api
 
     - name: Build and Push Worker Image
       uses: docker/build-push-action@v2
       with:
-        context: ./apps/worker  # Corrected context for Worker service
-        file: ./apps/worker/Dockerfile  # Corrected path to Worker Dockerfile
+        context: ./apps/worker
+        file: ./apps/worker/Dockerfile
         push: true
-        tags: tabish1511/cicd-test:worker  # Push Worker image to the 'cicd-test' repository with 'worker' tag
+        tags: tabish1511/cicd-test:worker
+
+    - name: Upload docker-compose File to EC2
+      uses: appleboy/scp-action@master
+      with:
+        host: ${{ secrets.SSH_HOST }}
+        username: ${{ secrets.SSH_USERNAME }}
+        key: ${{ secrets.SSH_KEY }}
+        source: ./docker-compose.yml
+        target: /home/ubuntu/cicd-test/docker-compose.yml
+
+    - name: Deploy to EC2
+      uses: appleboy/ssh-action@master
+      with:
+        host: ${{ secrets.SSH_HOST }}
+        username: ${{ secrets.SSH_USERNAME }}
+        key: ${{ secrets.SSH_KEY }}
+        script: |
+          # Pull the latest images
+          sudo docker pull tabish1511/cicd-test:api
+          sudo docker pull tabish1511/cicd-test:worker
+          sudo docker pull redis:latest
+          
+          # Stop and remove existing containers if they exist
+          sudo docker-compose -f /home/ubuntu/cicd-test/docker-compose.yml down
+          
+          # Run docker-compose with updated images
+          sudo docker-compose -f /home/ubuntu/cicd-test/docker-compose.yml up -d
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+# name: Build and Deploy Docker-Compose Services
+
+# on:
+#   push:
+#     branches:
+#       - master
+#       - main
+
+# jobs:
+#   build-and-deploy:
+#     runs-on: ubuntu-latest
+#     steps:
+#     - name: Check Out Repo
+#       uses: actions/checkout@v2
+
+#     - name: Log in to Docker Hub
+#       uses: docker/login-action@v1
+#       with:
+#         username: ${{ secrets.DOCKER_USERNAME }}
+#         password: ${{ secrets.DOCKER_PASSWORD }}
+
+#     - name: Build and Push API Image
+#       uses: docker/build-push-action@v2
+#       with:
+#         context: ./apps/api  # Corrected context for API service
+#         file: ./apps/api/Dockerfile  # Corrected path to API Dockerfile
+#         push: true
+#         tags: tabish1511/cicd-test:api  # Push API image to the 'cicd-test' repository with 'api' tag
+
+#     - name: Build and Push Worker Image
+#       uses: docker/build-push-action@v2
+#       with:
+#         context: ./apps/worker  # Corrected context for Worker service
+#         file: ./apps/worker/Dockerfile  # Corrected path to Worker Dockerfile
+#         push: true
+#         tags: tabish1511/cicd-test:worker  # Push Worker image to the 'cicd-test' repository with 'worker' tag
+
+#     - name: Deploy to EC2
+#       uses: appleboy/ssh-action@master
+#       with:
+#         host: ${{ secrets.SSH_HOST }}
+#         username: ${{ secrets.SSH_USERNAME }}
+#         key: ${{ secrets.SSH_KEY }}
+#         script: |
+#           sudo docker pull tabish1511/cicd-test:api
+#           sudo docker pull tabish1511/cicd-test:worker
+#           sudo docker stop api || true
+#           sudo docker stop worker || true
+#           sudo docker rm api || true
+#           sudo docker rm worker || true
+#           sudo docker run -d --name api -p 8080:8080 tabish1511/cicd-test:api
+#           sudo docker run -d --name worker tabish1511/cicd-test:worker
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
